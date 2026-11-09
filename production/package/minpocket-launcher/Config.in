@@ -1,0 +1,7 @@
+config BR2_PACKAGE_MINPOCKET_LAUNCHER
+	bool "MinPocket launcher"
+	depends on BR2_aarch64
+	depends on BR2_TOOLCHAIN_HAS_THREADS
+	select BR2_PACKAGE_LIBDRM
+	help
+	  Native DRM launcher and PID 1 for the MiniLoong Pocket 1.

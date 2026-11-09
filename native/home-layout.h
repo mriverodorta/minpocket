@@ -1,0 +1,19 @@
+// SPDX-License-Identifier: GPL-2.0-only
+#ifndef MP_HOME_LAYOUT_H
+#define MP_HOME_LAYOUT_H
+struct mp_home_layout {
+ unsigned background_layer,artwork_layer,details_layer,shelves_layer,focus_layer,navigation_layer,status_layer;
+ unsigned rail_width,menu_width,menu_item_height,menu_top,inset,top,gap,context_percent;
+ unsigned card_width,card_height,card_gap,row_gap,focus_percent,animation_ms;
+ unsigned mask_text_shade_percent,info_width_percent,title_width_percent,title_height,title_anchor_last_line;
+ unsigned description_width_percent,description_lines,games_heading_visible,caption_background_alpha,caption_padding;
+ unsigned metadata_height,description_height,shelf_text_height,card_text_height,nav_text_height,brand_text_height,badge_text_height;
+ unsigned title_margin_bottom,metadata_margin_bottom,description_margin_bottom,shelf_margin_bottom,card_margin_bottom,nav_margin_bottom,brand_margin_bottom,battery_margin_bottom,clock_margin_bottom,badge_margin_bottom;
+ unsigned info_margin_bottom,games_margin_bottom,consoles_margin_bottom;
+ unsigned title_margin_top,metadata_margin_top,description_margin_top,shelf_margin_top,card_margin_top,nav_margin_top,brand_margin_top,battery_margin_top,clock_margin_top,badge_margin_top,info_margin_top,games_margin_top,consoles_margin_top;
+ unsigned artwork_width_numerator,artwork_width_denominator,artwork_height_percent,mask_clear_left_percent,mask_vertical_inset_percent;
+};
+static inline unsigned mp_home_artwork_width(const struct mp_home_layout *l,unsigned viewport)
+{return l->artwork_width_denominator?(unsigned)((unsigned long long)viewport*l->artwork_width_numerator/l->artwork_width_denominator):0;}
+extern const struct mp_home_layout mp_home_layout_default;
+#endif

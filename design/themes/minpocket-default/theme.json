@@ -1,0 +1,122 @@
+{
+  "version": 2,
+  "name": "MinPocket Default",
+  "colors": {
+    "surface": "#111d22",
+    "text": "#eaf3ee",
+    "muted": "#9eb5af",
+    "accent": "#9de6c4",
+    "panel": "#203136",
+    "boundary": "#7dcfff",
+    "status_text": "#c0caf5"
+  },
+  "font_scale": {
+    "title": 8,
+    "page": 6,
+    "menu": 5,
+    "body": 4,
+    "hint": 3
+  },
+  "status": {
+    "icon_height": 30,
+    "text_height": 27,
+    "text_gap": 18,
+    "transition_ms": 800,
+    "box": {
+      "background": "#24283b",
+      "background_alpha": 0,
+      "border_color": "#7dcfff",
+      "border_alpha": 255,
+      "opacity": 255,
+      "border": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "radius": {
+        "top_left": 0,
+        "top_right": 0,
+        "bottom_right": 0,
+        "bottom_left": 0
+      },
+      "border_style": "solid",
+      "shadow": {
+        "color": "#000000",
+        "alpha": 0,
+        "blur": 0,
+        "x": 0,
+        "y": 0,
+        "spread": 0
+      },
+      "blend_mode": "normal",
+      "blur": 0,
+      "backdrop_blur": 0,
+      "clip_children": true,
+      "frame": {
+        "art": "none",
+        "highlight": "#7dcfff",
+        "light": "#c0caf5",
+        "mid": "#7aa2f7",
+        "face": "#414868",
+        "shadow": "#1b1e2e",
+        "recess": "#151827"
+      }
+    },
+    "layout": {
+      "orientation": "horizontal",
+      "direction": "forward",
+      "justify": "end",
+      "align": "start",
+      "anchor_x": "end",
+      "anchor_y": "start",
+      "padding": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "margin": {
+        "top": 10,
+        "right": 10,
+        "bottom": 0,
+        "left": 0
+      },
+      "gap": 18,
+      "width": 0,
+      "height": 0,
+      "min_width": 0,
+      "min_height": 0,
+      "max_width": 400,
+      "max_height": 512,
+      "offset_x": 0,
+      "offset_y": 0,
+      "overflow": "reject"
+    },
+    "transition_easing": "out_cubic",
+    "visible": true,
+    "animations": true,
+    "collapse_hidden": true,
+    "pixel_scale": 1,
+    "indicator_order": [
+      "battery",
+      "wifi",
+      "clock"
+    ]
+  },
+  "icon_palette": [
+    "#24283b",
+    "#1b1e2e",
+    "#1f2335",
+    "#414868",
+    "#7aa2f7",
+    "#7dcfff",
+    "#c0caf5",
+    "#7badf9",
+    "#7cb9fb",
+    "#7cc4fd",
+    "#6eadd9",
+    "#5f8cb4",
+    "#506a8e"
+  ]
+}

@@ -1,0 +1,8 @@
+Derived from libwebp v1.5.0, src/enc/near_lossless_enc.c.
+https://github.com/webmproject/libwebp/blob/v1.5.0/src/enc/near_lossless_enc.c
+Google copyright and BSD-3-Clause license retained in source and COPYING.
+PATENTS and AUTHORS accompany this adaptation.
+The pixel algorithm is unchanged. The adapter replaces WebPPicture and
+WebP allocation helpers with a bounded in-place array API and malloc/free.
+The caller can transpose the logical dimensions of x-major pixels because
+the four-neighbor algorithm is transpose invariant. Tests verify this.

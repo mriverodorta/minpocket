@@ -1,0 +1,9 @@
+/* SPDX-License-Identifier: GPL-2.0-only */
+/* Generated from design/themes/minpocket-default/theme.json. */
+#include "theme.h"
+const struct mp_theme mp_theme_default = {
+    .colors = {.surface = 0x111d22, .text = 0xeaf3ee, .muted = 0x9eb5af, .accent = 0x9de6c4, .panel = 0x203136, .boundary = 0x7dcfff, .status_text = 0xc0caf5},
+    .font_scale = {.title = 8, .page = 6, .menu = 5, .body = 4, .hint = 3},
+    .status = {.box = {.background = 0x24283b, .border_color = 0x7dcfff, .background_alpha = 0, .border_alpha = 255, .opacity = 255, .border = {.top = 0, .right = 0, .bottom = 0, .left = 0}, .radius = {.top_left = 0, .top_right = 0, .bottom_right = 0, .bottom_left = 0}, .border_style = MP_BORDER_SOLID, .frame = {.art = MP_FRAME_NONE, .highlight = 0x7dcfff, .light = 0xc0caf5, .mid = 0x7aa2f7, .face = 0x414868, .shadow = 0x1b1e2e, .recess = 0x151827}, .shadow = {.color = 0x000000, .alpha = 0, .blur = 0, .x = 0, .y = 0, .spread = 0}, .blend_mode = MP_BLEND_NORMAL, .blur = 0, .backdrop_blur = 0, .clip_children = 1}, .layout = {.orientation = MP_HORIZONTAL, .direction = MP_FORWARD, .justify = MP_JUSTIFY_END, .align = MP_ALIGN_START, .anchor_x = MP_ALIGN_END, .anchor_y = MP_ALIGN_START, .padding = {.top = 0, .right = 0, .bottom = 0, .left = 0}, .margin = {.top = 10, .right = 10, .bottom = 0, .left = 0}, .gap = 18, .overflow = MP_OVERFLOW_REJECT, .width = 0, .height = 0, .min_width = 0, .min_height = 0, .max_width = 400, .max_height = 512, .offset_x = 0, .offset_y = 0}, .pixel_scale = 1, .indicator_order = {"battery", "wifi", "clock"}, .indicator_order_count = 3, .icon_height = 30, .text_height = 27, .text_gap = 18, .transition_ms = 800, .transition_easing = MP_EASE_OUT_CUBIC, .visible = 1, .animations = 1, .collapse_hidden = 1},
+    .icon_palette = {0x24283b, 0x1b1e2e, 0x1f2335, 0x414868, 0x7aa2f7, 0x7dcfff, 0xc0caf5, 0x7badf9, 0x7cb9fb, 0x7cc4fd, 0x6eadd9, 0x5f8cb4, 0x506a8e}
+};
