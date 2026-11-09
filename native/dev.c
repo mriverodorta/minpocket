@@ -106,8 +106,14 @@ static void fail_status(const char *stage)
 
 void mp1_counter_sample(uint64_t *counter, uint64_t *frequency)
 {
+#if defined(__aarch64__)
     __asm__ volatile("isb; mrs %0, cntvct_el0" : "=r" (*counter));
     __asm__ volatile("mrs %0, cntfrq_el0" : "=r" (*frequency));
+#else
+    /* Non-AArch64 host builds have no MP1 hardware counter. */
+    *counter = 0;
+    *frequency = 0;
+#endif
 }
 
 int mp1_start_late_drivers(void)
