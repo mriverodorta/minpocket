@@ -430,8 +430,8 @@ int mp_runtime_write_slots(const char *path,int seed)
  if(glob(pattern,0,NULL,&paths)||paths.gl_pathc!=1){globfree(&paths);return -1;}
  char base[512];snprintf(base,sizeof base,"%s",paths.gl_pathv[0]);globfree(&paths);
  char attr[640],device[80],name[80];unsigned long long start=0,sectors=0;FILE *f;
- snprintf(attr,sizeof attr,"%s/start",base);f=fopen(attr,"r");if(f){(void)fscanf(f,"%llu",&start);fclose(f);}
- snprintf(attr,sizeof attr,"%s/size",base);f=fopen(attr,"r");if(f){(void)fscanf(f,"%llu",&sectors);fclose(f);}
+ snprintf(attr,sizeof attr,"%s/start",base);f=fopen(attr,"r");if(f){if(fscanf(f,"%llu",&start)!=1)start=0;fclose(f);}
+ snprintf(attr,sizeof attr,"%s/size",base);f=fopen(attr,"r");if(f){if(fscanf(f,"%llu",&sectors)!=1)sectors=0;fclose(f);}
  snprintf(attr,sizeof attr,"%s/uevent",base);f=fopen(attr,"r");int named=0;if(f){while(fgets(name,sizeof name,f))if(!strcmp(name,"PARTNAME=minpocket\n"))named=1;fclose(f);}
  if(start!=32768||sectors<=MP_HOME_RESERVED_BLOCKS||sectors>262144||!named)return -1;
  snprintf(device,sizeof device,"/dev/%s",strrchr(base,'/')+1);
@@ -469,7 +469,8 @@ int main(int argc,char **argv)
  if(argc==3&&!strcmp(argv[1],"seed"))return mp_runtime_write_slots(argv[2],1)?1:0;
  int lock=-1;
  if(argc>=3){char path[1024];if(ensure_library(argv[2]))return 1;snprintf(path,sizeof path,"%s/Library/.index.lock",argv[2]);lock=open(path,O_CREAT|O_RDWR|O_CLOEXEC|O_NOFOLLOW,0600);if(lock<0||flock(lock,LOCK_EX|LOCK_NB))return 1;}
- (void)nice(19);
+ errno=0;
+ if(nice(19)==-1&&errno)perror("lower asset preparation priority");
  if(argc==4&&!strcmp(argv[1],"import"))return import_catalog(argv[2],argv[3])?1:0;
  if(argc==6&&!strcmp(argv[1],"publish"))return mp_runtime_publish(argv[2],argv[3],atoi(argv[4]),argv[5])?1:0;
  if(argc==3&&!strcmp(argv[1],"index"))return mp_runtime_index(argv[2])?1:0;
@@ -480,7 +481,7 @@ int main(int argc,char **argv)
   char catalog_path[1024];snprintf(catalog_path,sizeof catalog_path,"%s/Library/catalog.mpl",argv[2]);
   struct stat st;if(stat(catalog_path,&st))return 1;
   snprintf(state,sizeof state,"%s %s %lld %ld %llu %llu %llu 3\n",argv[3],argv[4],(long long)st.st_mtim.tv_sec,st.st_mtim.tv_nsec,(unsigned long long)st.st_ino,(unsigned long long)st.st_size,mp_home_abi());
-  FILE *f=fopen(path,"r");if(f){(void)fgets(old,sizeof old,f);fclose(f);}if(!strcmp(old,state))return 0;
+  FILE *f=fopen(path,"r");if(f){if(!fgets(old,sizeof old,f))old[0]=0;fclose(f);}if(!strcmp(old,state))return 0;
   char snapshot[1024];snprintf(snapshot,sizeof snapshot,"%s/Library/home.startup",argv[2]);
   if(mp_runtime_publish(argv[2],argv[3],atoi(argv[4]),snapshot)||mp_runtime_write_slots(snapshot,0))return 1;
   return atomic_file(path,state,strlen(state))?1:0;

@@ -19,7 +19,7 @@ int mp_asset_data_ready(void *context)
  if(glob(pattern,0,NULL,&paths)){globfree(&paths);return 0;}
  char path[640],device[80]={0};unsigned matches=0;
  for(size_t i=0;i<paths.gl_pathc;i++){
-  unsigned long long start=0;snprintf(path,sizeof path,"%s/start",paths.gl_pathv[i]);f=fopen(path,"r");if(f){(void)fscanf(f,"%llu",&start);fclose(f);}
+  unsigned long long start=0;snprintf(path,sizeof path,"%s/start",paths.gl_pathv[i]);f=fopen(path,"r");if(f){if(fscanf(f,"%llu",&start)!=1)start=0;fclose(f);}
   if(start!=294912)continue;
   char line[256];int named=0;snprintf(path,sizeof path,"%s/uevent",paths.gl_pathv[i]);f=fopen(path,"r");
   if(f){while(fgets(line,sizeof line,f))if(!strcmp(line,"PARTNAME=Data\n"))named=1;fclose(f);}

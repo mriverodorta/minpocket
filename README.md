@@ -1,82 +1,94 @@
 # MinPocket
 
-MinPocket is an experimental native C launcher and minimal Linux project for
-the MiniLoong Pocket 1. The interface targets its 960 × 720 display and physical
-controls. It uses Buildroot, musl and direct DRM presentation.
+A fast, game-focused Linux experience for the **MiniLoong Pocket 1**.
 
-## Current state
+MinPocket brings a native C interface, pixel-art styling and a small operating
+system together around one goal: making it easier to choose something to play.
 
-The launcher provides an animated Home carousel, artwork composition, a sidebar,
-game information, battery status, Wi-Fi status and a 24-hour clock. Its framework
-includes ordered drawing layers, row/column layout, reusable styling, independent
-status indicators and a bounded persistent asset cache.
+![MinPocket Home on the MiniLoong Pocket 1](docs/images/minpocket-home.png)
 
-The sidebar order is Search, Home, Library, Favorites, Collections, Discovery,
-Settings. Several destinations remain placeholders. The lower shelf's
-“Recently added” heading does not yet implement chronological discovery.
-Game execution, save/resume integration and a ScreenScraper client remain
-unfinished. This is a source preview, not a qualified installable OS release.
+## Features
 
-UI tuning overlays and red text highlighting are disabled by default. Private
-network provisioning and developer credentials are not part of this repository.
+- **Game-focused Home.** Browse artwork cards with selected-game information,
+  full-screen backgrounds and animated navigation.
+- **Native pixel interface.** Monogram typography, Tokyo Night Storm colors,
+  authored icons and consistent layout and motion.
+- **Live status.** Battery level and charging animation, Wi-Fi signal strength
+  and a 24-hour clock.
+- **Fast startup.** A tailored boot path and saved-Home cache prioritize the
+  first displayed frame. Background services start after the initial frames.
+- **Efficient artwork.** Prepared image derivatives, bounded RAM caching and
+  parallel LZ4 compression reduce repeated work while preserving original media.
+- **Hardware-focused design.** Direct DRM presentation, physical controls and
+  60 Hz operation on the MP1's 960 × 720 display.
 
-## Source layout
+The sidebar brings together **Search, Home, Library, Favorites, Collections,
+Discovery and Settings**. Display and power controls live inside Settings.
 
-- `native/`: launcher, framework, device integration, cache and synthetic tests.
-- `boot/`: bounded FIT loader, startup-cache handoff and U-Boot modifications.
-- `design/`: theme/layout compilers and the selected interface tokens.
-- `production/`: Buildroot package, MP1 configuration and kernel modifications.
-- `scripts/`: source audit, component tests and standalone userspace builds.
+## Architecture
 
-## Build and test
+| Layer | Implementation |
+|---|---|
+| Boot | U-Boot, bounded FIT loading and saved-Home handoff |
+| System | Buildroot, musl and a native C launcher running as PID 1 |
+| Display | Direct DRM presentation with ordered drawing layers |
+| Interface | Reusable layout, styling, animation and indicator components |
+| Storage | exFAT Data partition, runtime library and persistent asset cache |
+
+## Build
 
 On Linux, install a C compiler, Make, Python 3, pkg-config and libdrm development
-headers. Run:
+headers, then run:
 
 ```sh
-make check
 make native
-make audit
 ```
 
-Run `make setup-hooks` after cloning to enable the source-audit commit hook.
-The audit checks the index and existing Git history. It rejects media, binary
-artifacts, private directories, personal paths and common credential patterns.
-Keep all local configuration and user media outside this source repository.
+Executables are written to `build/native/`. The launcher targets the MP1's
+kernel, display and input integration and runs as PID 1.
 
-`make native` builds Linux executables under ignored `build/native/`. Building
-them does not start the launcher or access a device. The launcher runs as PID 1
-and requires the matching MP1 kernel/DTB integration; do not run it as a desktop
-application. `make check` uses synthetic fixtures, without a game library or
-device connection.
-
-For a Buildroot userspace archive:
+For the Buildroot userspace archive:
 
 ```sh
 ./production/build-rootfs.sh
 ```
 
 This command requires Docker, curl and a SHA-256 utility. It verifies the pinned
-Buildroot archive and writes its output under ignored `build/`. It does not
-produce a flashable SD image. Complete boot firmware and base board-source
-packaging remain to be made independently reproducible. The kernel modification
-scripts require the matching MP1 base driver tree; they are not patches against
-an arbitrary mainline kernel.
+Buildroot download and writes its output to `build/buildroot/`. Boot integration
+uses the matching MP1 kernel, device tree and firmware sources.
 
-## Artwork and external services
+## Roadmap
 
-No game files, BIOS files, publisher artwork, screenshots, downloaded game
-descriptions or scraping credentials are included. UI icons use authored pixel
-tables. Renderer fixtures contain only synthetic data. A user's original media
-stays separate from generated cache derivatives.
+- Game launching, save states and resume.
+- Library search, favorites, collections, discovery and recently added indexing.
+- ScreenScraper integration for artwork and game information.
+- Complete board-source packaging and SD-image builds.
 
-ScreenScraper integration is planned. No developer credentials are bundled,
-and this repository does not claim API authorization or a working scraper.
+## Contributing
 
-## Licenses
+```sh
+make check
+make audit
+make setup-hooks
+```
 
-MinPocket-authored source identifies its license in file headers; some boot
-components use GPL-2.0-or-later, while the launcher uses GPL-2.0-only. See
-`LICENSE` and `THIRD_PARTY.md` for the retained font and codec licenses.
-Third-party notices remain with their corresponding source files. No game
-publisher's artwork is relicensed by this repository.
+Component checks cover rendering, layout, navigation, animation, cache recovery
+and boot-cache framing. The source audit also runs through the commit and push
+hooks. GitHub Actions checks source changes, component tests and userspace builds.
+
+| Directory | Contents |
+|---|---|
+| `native/` | Launcher, framework, device integration and component tests |
+| `boot/` | FIT loader, cache handoff and U-Boot modifications |
+| `design/` | Theme tokens, selected icons and layout compilers |
+| `production/` | Buildroot package, MP1 configuration and kernel modifications |
+| `scripts/` | Source audit and build helpers |
+
+## License
+
+The launcher uses **GPL-2.0-only**. Individual boot components also identify
+**GPL-2.0-or-later** in their headers. See [LICENSE](LICENSE) and
+[THIRD_PARTY.md](THIRD_PARTY.md) for the font and codec licenses.
+
+Game artwork shown in the documentation retains its respective owners'
+copyrights. The source-code license does not cover that artwork.

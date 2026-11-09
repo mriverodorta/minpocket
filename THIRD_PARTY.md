@@ -11,5 +11,8 @@ the WebPPicture wrapper with a bounded array API. It is not a WebP codec.
 
 The Buildroot recipe downloads Buildroot and its selected dependencies rather
 than vendoring their source or binaries. Their respective licenses continue
-to apply to generated distributions. No binary OS release accompanies this
-source preview.
+to apply to generated distributions.
+
+The Home screenshot in `docs/images/minpocket-home.png` shows the launcher on
+the MP1. Game artwork within that screenshot retains its respective owners'
+copyrights and is outside the source-code license.

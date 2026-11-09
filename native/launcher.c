@@ -301,7 +301,7 @@ int main(void)
     mount("proc", "/proc", "proc", MS_NOSUID | MS_NOEXEC | MS_NODEV, NULL);
     int boost = open("/proc/minpocket_boot_boost", O_WRONLY | O_CLOEXEC);
     if (boost >= 0) {
-        (void)write(boost, "0", 1);
+        if (write(boost, "0", 1) != 1) perror("release boot CPU boost");
         close(boost);
     }
     profile.boost_released = mp1_boot_ns();
@@ -312,7 +312,7 @@ int main(void)
     mp1_counter_sample(&profile.second_counter, &profile.frequency);
 
     mount("sysfs", "/sys", "sysfs", MS_NOSUID | MS_NOEXEC | MS_NODEV, NULL);
-    sethostname("minpocket", sizeof "minpocket" - 1);
+    if (sethostname("minpocket", sizeof "minpocket" - 1)) perror("set host name");
 
     int development = !access("/sys/firmware/devicetree/base/chosen/minipocket,development", F_OK);
     int ui_debug = development && MP_UI_DEBUG;

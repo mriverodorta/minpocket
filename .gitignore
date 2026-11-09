@@ -63,3 +63,9 @@
 **/*.a
 **/*.log
 **/*.dSYM/
+# Explicitly approved documentation image; keep every other media file excluded.
+!/docs/
+/docs/*
+!/docs/images/
+/docs/images/*
+!/docs/images/minpocket-home.png

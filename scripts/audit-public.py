@@ -5,13 +5,18 @@ Inspect the Git index and non-ignored source files. Also inspect historical
 blobs when commits exist. Findings print file names and rule IDs, never values.
 """
 from pathlib import Path, PurePosixPath
+import hashlib
 import re
 import subprocess
 import sys
 
 ROOT=Path(__file__).resolve().parents[1]
 TOP={'.gitignore','.gitattributes','.githooks','.github','README.md','LICENSE',
-     'THIRD_PARTY.md','Makefile','native','boot','design','production','scripts'}
+     'THIRD_PARTY.md','Makefile','native','boot','design','production','scripts','docs'}
+# A single owner-approved documentation screenshot. Its exact bytes are pinned;
+# this exception does not permit arbitrary PNGs or metadata under the same name.
+APPROVED_MEDIA={'docs/images/minpocket-home.png':
+ 'd0d5cad63c5a0c593e9d2123008cab32e887db8a16837d1f0457415848f40874'}
 DENY_PARTS={'localdev','provisioning','research','experiments','concepts','screenshots',
             'games','.ssh','.impeccable','__pycache__'}
 DENY_NAMES={'authorized_keys','known_hosts','.DS_Store','sc.fr.env','home-art.h',
@@ -29,13 +34,17 @@ MAGIC=(b'\x7fELF',b'\x89PNG',b'\xff\xd8\xff',b'PK\x03\x04',b'\x1f\x8b',b'\xcf\xf
 def path_rules(name):
  p=PurePosixPath(name);parts=p.parts
  if not parts or p.is_absolute() or '..' in parts or parts[0] not in TOP:return ['unexpected-path']
+ if name in APPROVED_MEDIA:return []
+ if parts[0]=='docs':return ['unapproved-documentation-asset']
  rules=[]
  if any(part in DENY_PARTS for part in parts):rules.append('private-directory')
  if p.name in DENY_NAMES and name!='native/tests/preview-cards.h':rules.append('private-asset-or-identity')
  if p.name=='.env' or '.env.' in p.name or p.name.endswith('.env'):rules.append('environment-file')
  if DENY_SUFFIX.search(p.name):rules.append('binary-or-media-extension')
  return rules
-def content_rules(data):
+def content_rules(data,name=''):
+ if name in APPROVED_MEDIA:
+  return [] if hashlib.sha256(data).hexdigest()==APPROVED_MEDIA[name] else ['approved-media-hash-mismatch']
  rules=[]
  if len(data)>1024*1024:rules.append('oversized-source')
  if data.startswith(MAGIC) or b'\0' in data:rules.append('binary-content')
@@ -67,7 +76,7 @@ def audit():
            if p.is_file() and not p.is_symlink() and not any(x in {'build','.git'} for x in p.relative_to(ROOT).parts)]
  for name,data in entries:
   count+=1
-  failures.extend((name,rule) for rule in path_rules(name)+content_rules(data))
+  failures.extend((name,rule) for rule in path_rules(name)+content_rules(data,name))
  history=git('rev-list','--objects','--all')
  historical=0
  if history.returncode==0:
@@ -77,7 +86,7 @@ def audit():
    blob,name=fields;kind=git('cat-file','-t',blob)
    if kind.stdout.strip()!=b'blob':continue
    historical+=1;data=git('cat-file','blob',blob).stdout
-   failures.extend(('history:'+name,rule) for rule in path_rules(name)+content_rules(data))
+   failures.extend(('history:'+name,rule) for rule in path_rules(name)+content_rules(data,name))
  for name,rule in sorted(set(failures)):print(f'{rule}: {name}',file=sys.stderr)
  if failures:return 1
  print(f'Public-source audit passed: {count} files, {historical} historical blobs; no prohibited content found.')

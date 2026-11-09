@@ -223,7 +223,8 @@ static void *worker(void *context)
   if(pixels){disk=read_file(root,key,&spec,pixels);if(!disk)result=0;else if(!mp_asset_prepare_pixels(&spec,pixels)){result=0;(void)write_file(root,key,&spec,pixels);}}
   pthread_mutex_lock(&c->mutex);e=&c->entries[slot];
   if(result){free(pixels);c->bytes-=e->bytes;memset(e,0,sizeof *e);++c->stats.rejected;}
-  else{e->pixels=pixels;e->state=3;e->used=++c->clock;if(!disk)++c->stats.disk_hits;else ++c->stats.generated;(void)write(c->notify[1],"r",1);}
+  else{e->pixels=pixels;e->state=3;e->used=++c->clock;if(!disk)++c->stats.disk_hits;else ++c->stats.generated;/* A full nonblocking pipe already has a pending wakeup. */
+   ssize_t notified;do{notified=write(c->notify[1],"r",1);}while(notified<0&&errno==EINTR);}
  }
  pthread_mutex_unlock(&c->mutex);if(root>=0)close(root);return NULL;
 }
